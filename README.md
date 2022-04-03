@@ -2,5 +2,5 @@
 
 A Barnes Hut algorithm usage for galaxies simulation.
 
-![screenshot](https://user-images.githubusercontent.com/94078957/161405555-30def1f7-87e2-4f28-ab04-16b157c9ce4a.png)
-![screenshot1](https://user-images.githubusercontent.com/94078957/161406401-bad4a211-f721-4049-ae20-d7a647411917.png)
+![screenshot1](https://user-images.githubusercontent.com/94078957/161432908-9eafd384-d2e9-4231-b5f6-3aec71d7e977.png)
+![screenshot2](https://user-images.githubusercontent.com/94078957/161432909-4a798939-1b0b-42ac-84a6-7934db163edf.png)
