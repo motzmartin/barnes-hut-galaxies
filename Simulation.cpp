@@ -122,14 +122,19 @@ void Simulation::RenderFrame()
 	Uint32* pixels;
 	SDL_PixelFormat* format;
 	int pitch;
+
 	SDL_Texture* texture = SDL_CreateTexture(renderer,
 		SDL_PIXELFORMAT_RGBA8888,
 		SDL_TEXTUREACCESS_STREAMING,
 		600,
 		600);
+
 	format = SDL_AllocFormat(SDL_PIXELFORMAT_RGBA8888);
+
 	SDL_LockTexture(texture, nullptr, &tmp, &pitch);
+
 	pixels = (Uint32*)tmp;
+
 	for (int i = 0; i < stars.size(); i++)
 	{
 		Vect3D starPosition = stars[i].GetPosition();
@@ -150,9 +155,13 @@ void Simulation::RenderFrame()
 			}
 		}
 	}
+
 	SDL_FreeFormat(format);
+
 	SDL_UnlockTexture(texture);
+
 	SDL_RenderCopy(renderer, texture, nullptr, nullptr);
+
 	SDL_DestroyTexture(texture);
 	
 	SDL_RenderPresent(renderer);
