@@ -29,14 +29,18 @@ public:
 	MassData GetMassData();
 	void SetMassData(MassData _massData);
 
+	int GetId();
+	void SetId(int _id);
+
 private:
 	int starsNumber = 0;
+
+	MassData massData = { 0 };
+	int id = -1;
 
 	Octree* nodes[8] = { 0 };
 
 	Box box = { 0 };
-
-	MassData massData = { 0 };
 };
 
 Octree* CreateOctree(std::vector<Star>& stars);

@@ -96,9 +96,11 @@ void InsertStar(std::vector<Star>& stars, Star star, Octree* octree)
 			if (!existingStarInserted && IsInNode(massData.position, node->GetBox()))
 			{
 				node->SetMassData(massData);
+				node->SetId(octree->GetId());
 				node->SetStarsNumber(1);
 
 				octree->SetMassData({ 0 });
+				octree->SetId(-1);
 
 				existingStarInserted = true;
 			}
@@ -116,6 +118,7 @@ void InsertStar(std::vector<Star>& stars, Star star, Octree* octree)
 	else
 	{
 		octree->SetMassData({ star.GetMass(), star.GetPosition() });
+		octree->SetId(star.GetId());
 	}
 
 	octree->SetStarsNumber(starsNumber + 1);
@@ -196,6 +199,11 @@ Vect3D CalculateForceOnStar(Star* star, Octree* node)
 
 	double distance = Distance(starPos, massData.position);
 
+	if (distance < 10.0)
+	{
+		distance = 10.0;
+	}
+
 	if (node->GetStarsNumber() == 1)
 	{
 		force = Force(starPos, starMass, massData.position, massData.mass, distance);
@@ -212,7 +220,7 @@ Vect3D CalculateForceOnStar(Star* star, Octree* node)
 
 			for (int i = 0; i < 8; i++)
 			{
-				if (nodes[i] != nullptr)
+				if (nodes[i] != nullptr && nodes[i]->GetId() != star->GetId())
 				{
 					force = force + CalculateForceOnStar(star, nodes[i]);
 				}
@@ -234,11 +242,6 @@ bool IsInNode(Vect3D starPos, Box box)
 
 Vect3D Force(Vect3D pos, double mass, Vect3D targetPos, double targetMass, double distance)
 {
-	if (distance < 10.0)
-	{
-		distance = 10.0;
-	}
-
 	return (targetPos - pos) * (mass * targetMass * GRAVITY) / pow(distance, 3);
 }
 
@@ -298,4 +301,14 @@ MassData Octree::GetMassData()
 void Octree::SetMassData(MassData _massData)
 {
 	massData = _massData;
+}
+
+int Octree::GetId()
+{
+	return id;
+}
+
+void Octree::SetId(int _id)
+{
+	id = _id;
 }
