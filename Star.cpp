@@ -43,12 +43,12 @@ void Star::SetForce(Vect3D _force)
 
 void Star::Update()
 {
-	if (mass != 0.0)
+	if (mass > 0.0)
 	{
 		Vect3D tmp = position;
-		
+
 		position = position * 2.0 - lastPosition + force / mass;
-		
+
 		lastPosition = tmp;
 	}
 }

@@ -162,12 +162,14 @@ void Simulation::RenderFrame()
 	for (int i = 0; i < stars.size(); i++)
 	{
 		Vect3D starPosition = stars[i].GetPosition();
+
 		if (starPosition.x >= 0.0 &&
 			starPosition.x < 600.0 &&
 			starPosition.y >= 0.0 &&
 			starPosition.y < 600.0)
 		{
 			int grey = (int)(starPosition.z / 600.0 * 255.0);
+
 			if (grey > 0)
 			{
 				if (grey > 255)
