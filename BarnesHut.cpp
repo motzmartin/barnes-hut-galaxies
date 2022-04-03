@@ -234,7 +234,7 @@ void CalculateForces(std::vector<Star>& stars, Octree* octree)
 	}
 }
 
-Vect3D CalculerForce(Vect3D pos, double mass, Vect3D targetPos, double targetMass)
+Vect3D Force(Vect3D pos, double mass, Vect3D targetPos, double targetMass)
 {
 	double distance = Distance(pos, targetPos);
 
@@ -255,7 +255,7 @@ Vect3D CalculateForceOnStar(Star* star, Octree* node)
 
 	if (node->GetStarsNumber() == 1)
 	{
-		force = CalculerForce(starPos, starMass, node->GetPosition(), node->GetMass());
+		force = Force(starPos, starMass, node->GetPosition(), node->GetMass());
 	}
 	else
 	{
@@ -263,7 +263,7 @@ Vect3D CalculateForceOnStar(Star* star, Octree* node)
 
 		if (node->GetBox().size / Distance(starPos, massData.centerOfMass) < 1.0)
 		{
-			force = CalculerForce(starPos, starMass, massData.centerOfMass, massData.mass);
+			force = Force(starPos, starMass, massData.centerOfMass, massData.mass);
 		}
 		else
 		{

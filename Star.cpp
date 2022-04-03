@@ -5,10 +5,10 @@ Vect3D Star::GetPosition()
 	return position;
 }
 
-void Star::SetPosition(Vect3D newPosition)
+void Star::SetPosition(Vect3D _position)
 {
-	lastPosition = newPosition;
-	position = newPosition;
+	lastPosition = _position;
+	position = _position;
 }
 
 double Star::GetMass()
@@ -16,9 +16,9 @@ double Star::GetMass()
 	return mass;
 }
 
-void Star::SetMass(double newMass)
+void Star::SetMass(double _mass)
 {
-	mass = newMass;
+	mass = _mass;
 }
 
 int Star::GetId()
@@ -26,9 +26,9 @@ int Star::GetId()
 	return id;
 }
 
-void Star::SetId(int newId)
+void Star::SetId(int _id)
 {
-	id = newId;
+	id = _id;
 }
 
 Vect3D Star::GetForce()
@@ -36,9 +36,9 @@ Vect3D Star::GetForce()
 	return force;
 }
 
-void Star::SetForce(Vect3D f)
+void Star::SetForce(Vect3D _force)
 {
-	force = f;
+	force = _force;
 }
 
 void Star::Update(std::vector<Star> stars)

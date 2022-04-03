@@ -54,9 +54,21 @@ private:
 };
 
 Octree* CreateOctree(std::vector<Star>& stars);
-void InsertStar(std::vector<Star>& stars, Star star, Octree* octree);
-void FreeOctree(Octree* octree);
-MassData CalculateMasses(Octree* octree);
-void CalculateForces(std::vector<Star>& stars, Octree* octree);
-Vect3D CalculateForceOnStar(Star* star, Octree* node);
+
 void DeleteEmptyLeaves(Octree* octree);
+
+bool IsInNode(Vect3D starPos, Box box);
+
+void CreateNodes(Octree* octree, Box box, double newSize);
+
+void InsertStar(std::vector<Star>& stars, Star star, Octree* octree);
+
+void FreeOctree(Octree* octree);
+
+MassData CalculateMasses(Octree* octree);
+
+void CalculateForces(std::vector<Star>& stars, Octree* octree);
+
+Vect3D Force(Vect3D pos, double mass, Vect3D targetPos, double targetMass);
+
+Vect3D CalculateForceOnStar(Star* star, Octree* node);

@@ -38,16 +38,16 @@ class Star
 {
 public:
 	Vect3D GetPosition();
-	void SetPosition(Vect3D newPosition);
+	void SetPosition(Vect3D _position);
 
 	double GetMass();
-	void SetMass(double newMass);
+	void SetMass(double _mass);
 
 	int GetId();
-	void SetId(int newId);
+	void SetId(int _id);
 
 	Vect3D GetForce();
-	void SetForce(Vect3D f);
+	void SetForce(Vect3D _force);
 
 	void Update(std::vector<Star> stars);
 
