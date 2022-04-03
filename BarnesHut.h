@@ -5,7 +5,7 @@
 struct MassData
 {
 	double mass;
-	Vect3D centerOfMass;
+	Vect3D position;
 };
 
 struct Box
@@ -20,12 +20,6 @@ public:
 	int GetStarsNumber();
 	void SetStarsNumber(int _starsNumber);
 
-	Vect3D GetPosition();
-	void SetPosition(Vect3D _position);
-
-	double GetMass();
-	void SetMass(double _mass);
-
 	Octree** GetNodes();
 	void SetNode(int index, Octree* node);
 
@@ -35,16 +29,8 @@ public:
 	MassData GetMassData();
 	void SetMassData(MassData _massData);
 
-	bool IsLeaf();
-	void SetLeaf(bool _isLeaf);
-
 private:
-	bool isLeaf = true;
-
 	int starsNumber = 0;
-
-	Vect3D position = { 0 };
-	double mass = 0.0;
 
 	Octree* nodes[8] = { 0 };
 
@@ -55,20 +41,18 @@ private:
 
 Octree* CreateOctree(std::vector<Star>& stars);
 
-void DeleteEmptyLeaves(Octree* octree);
-
-bool IsInNode(Vect3D starPos, Box box);
-
-void CreateNodes(Octree* octree, Box box, double newSize);
-
 void InsertStar(std::vector<Star>& stars, Star star, Octree* octree);
 
-void FreeOctree(Octree* octree);
+void DeleteEmptyLeaves(Octree* octree);
 
 MassData CalculateMasses(Octree* octree);
 
 void CalculateForces(std::vector<Star>& stars, Octree* octree);
 
-Vect3D Force(Vect3D pos, double mass, Vect3D targetPos, double targetMass);
-
 Vect3D CalculateForceOnStar(Star* star, Octree* node);
+
+Vect3D Force(Vect3D pos, double mass, Vect3D targetPos, double targetMass, double distance);
+
+bool IsInNode(Vect3D starPos, Box box);
+
+void FreeOctree(Octree* octree);

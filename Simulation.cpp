@@ -105,17 +105,15 @@ void Simulation::Update()
 	CalculateMasses(octree);
 	CalculateForces(stars, octree);
 
-	std::vector<Star> tmp = stars;
-
 	for (int i = 0; i < stars.size(); i++)
 	{
-		stars[i].Update(tmp);
+		stars[i].Update();
 	}
 }
 
 void Simulation::ShowBoxes(Octree* octree)
 {
-	if (!octree->IsLeaf())
+	if (octree->GetStarsNumber() > 0)
 	{
 		Octree** nodes = octree->GetNodes();
 

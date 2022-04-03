@@ -46,6 +46,79 @@ Octree* CreateOctree(std::vector<Star>& stars)
 	return octree;
 }
 
+void InsertStar(std::vector<Star>& stars, Star star, Octree* octree)
+{
+	Box box = octree->GetBox();
+
+	double newSize = box.size / 2.0;
+
+	int starsNumber = octree->GetStarsNumber();
+
+	if (starsNumber > 1)
+	{
+		Octree** nodes = octree->GetNodes();
+
+		for (int i = 0; i < 8; i++)
+		{
+			if (IsInNode(star.GetPosition(), nodes[i]->GetBox()))
+			{
+				InsertStar(stars, star, nodes[i]);
+			}
+		}
+	}
+	else if (starsNumber == 1)
+	{
+		Vect3D positions[8] =
+		{
+			box.pos,
+			{ box.pos.x + newSize, box.pos.y, box.pos.z },
+			{ box.pos.x, box.pos.y + newSize, box.pos.z },
+			{ box.pos.x, box.pos.y, box.pos.z + newSize },
+			{ box.pos.x + newSize, box.pos.y + newSize, box.pos.z },
+			{ box.pos.x + newSize, box.pos.y, box.pos.z + newSize },
+			{ box.pos.x, box.pos.y + newSize, box.pos.z + newSize },
+			{ box.pos.x + newSize, box.pos.y + newSize, box.pos.z + newSize }
+		};
+
+		bool check1 = true;
+		bool check2 = true;
+
+		for (int i = 0; i < 8; i++)
+		{
+			Octree* node = new Octree;
+
+			node->SetBox({ positions[i], newSize });
+			
+			MassData massData = octree->GetMassData();
+
+			if (check1 && IsInNode(massData.position, node->GetBox()))
+			{
+				node->SetMassData(massData);
+				node->SetStarsNumber(1);
+
+				octree->SetMassData({ 0 });
+
+				check1 = false;
+			}
+
+			if (check2 && IsInNode(star.GetPosition(), node->GetBox()))
+			{
+				InsertStar(stars, star, node);
+
+				check2 = false;
+			}
+
+			octree->SetNode(i, node);
+		}
+	}
+	else
+	{
+		octree->SetMassData({ star.GetMass(), star.GetPosition() });
+	}
+
+	octree->SetStarsNumber(starsNumber + 1);
+}
+
 void DeleteEmptyLeaves(Octree* octree)
 {
 	Octree** nodes = octree->GetNodes();
@@ -54,9 +127,10 @@ void DeleteEmptyLeaves(Octree* octree)
 	{
 		if (nodes[i] != nullptr)
 		{
-			if (nodes[i]->IsLeaf() && nodes[i]->GetStarsNumber() == 0)
+			if (nodes[i]->GetStarsNumber() == 0)
 			{
 				FreeOctree(nodes[i]);
+
 				nodes[i] = nullptr;
 			}
 			else
@@ -67,136 +141,13 @@ void DeleteEmptyLeaves(Octree* octree)
 	}
 }
 
-bool IsInNode(Vect3D starPos, Box box)
-{
-	return starPos.x >= box.pos.x && starPos.x < box.pos.x + box.size &&
-		starPos.y >= box.pos.y && starPos.y < box.pos.y + box.size &&
-		starPos.z >= box.pos.z && starPos.z < box.pos.z + box.size;
-}
-
-void CreateNodes(Octree* octree, Box box, double newSize)
-{
-	Vect3D positions[8] =
-	{
-		{ box.pos.x, box.pos.y, box.pos.z },
-		{ box.pos.x + newSize, box.pos.y, box.pos.z },
-		{ box.pos.x, box.pos.y + newSize, box.pos.z },
-		{ box.pos.x, box.pos.y, box.pos.z + newSize },
-		{ box.pos.x + newSize, box.pos.y + newSize, box.pos.z },
-		{ box.pos.x + newSize, box.pos.y, box.pos.z + newSize },
-		{ box.pos.x, box.pos.y + newSize, box.pos.z + newSize },
-		{ box.pos.x + newSize, box.pos.y + newSize, box.pos.z + newSize }
-	};
-
-	for (int i = 0; i < 8; i++)
-	{
-		Octree* node = new Octree;
-		node->SetBox({ positions[i], newSize });
-
-		octree->SetNode(i, node);
-	}
-
-	octree->SetLeaf(false);
-}
-
-void InsertStar(std::vector<Star>& stars, Star star, Octree* octree)
-{
-	Box box = octree->GetBox();
-
-	double newSize = box.size / 2.0;
-
-	int starsNumber = octree->GetStarsNumber();
-
-	octree->SetStarsNumber(starsNumber + 1);
-
-	if (starsNumber > 1)
-	{
-		Octree** nodes = octree->GetNodes();
-
-		for (int i = 0; i < 8; i++)
-		{
-			if (nodes[i] != nullptr)
-			{
-				if (IsInNode(star.GetPosition(), nodes[i]->GetBox()))
-				{
-					InsertStar(stars, star, nodes[i]);
-				}
-			}
-		}
-	}
-	else if (starsNumber == 1)
-	{
-		if (octree->IsLeaf())
-		{
-			CreateNodes(octree, box, newSize);
-		}
-
-		Octree** nodes = octree->GetNodes();
-
-		for (int i = 0; i < 8; i++)
-		{
-			if (nodes[i] != nullptr)
-			{
-				if (IsInNode(octree->GetPosition(), nodes[i]->GetBox()))
-				{
-					nodes[i]->SetPosition(octree->GetPosition());
-					nodes[i]->SetMass(octree->GetMass());
-					nodes[i]->SetStarsNumber(1);
-
-					octree->SetPosition({ 0 });
-					octree->SetMass(0.0);
-
-					break;
-				}
-			}
-		}
-
-		for (int i = 0; i < 8; i++)
-		{
-			if (nodes[i] != nullptr)
-			{
-				if (IsInNode(star.GetPosition(), nodes[i]->GetBox()))
-				{
-					InsertStar(stars, star, nodes[i]);
-
-					break;
-				}
-			}
-		}
-	}
-	else
-	{
-		octree->SetPosition(star.GetPosition());
-		octree->SetMass(star.GetMass());
-	}
-}
-
-void FreeOctree(Octree* octree)
-{
-	if (!octree->IsLeaf())
-	{
-		Octree** nodes = octree->GetNodes();
-
-		for (int i = 0; i < 8; i++)
-		{
-			if (nodes[i] != nullptr)
-			{
-				FreeOctree(nodes[i]);
-			}
-		}
-	}
-
-	delete octree;
-}
-
 MassData CalculateMasses(Octree* octree)
 {
 	MassData massData = { 0 };
 
 	if (octree->GetStarsNumber() == 1)
 	{
-		massData.mass = octree->GetMass();
-		massData.centerOfMass = octree->GetPosition();
+		massData = octree->GetMassData();
 	}
 	else
 	{
@@ -204,7 +155,7 @@ MassData CalculateMasses(Octree* octree)
 
 		double massSum = 0.0;
 
-		Vect3D sum = { 0 };
+		Vect3D positionSum = { 0 };
 
 		for (int i = 0; i < 8; i++)
 		{
@@ -212,13 +163,13 @@ MassData CalculateMasses(Octree* octree)
 			{
 				MassData massData = CalculateMasses(nodes[i]);
 
-				sum = sum + massData.centerOfMass * massData.mass;
 				massSum += massData.mass;
+				positionSum = positionSum + massData.position * massData.mass;
 			}
 		}
 
 		massData.mass = massSum;
-		massData.centerOfMass = sum / massSum;
+		massData.position = positionSum / massSum;
 	}
 
 	octree->SetMassData(massData);
@@ -234,18 +185,6 @@ void CalculateForces(std::vector<Star>& stars, Octree* octree)
 	}
 }
 
-Vect3D Force(Vect3D pos, double mass, Vect3D targetPos, double targetMass)
-{
-	double distance = Distance(pos, targetPos);
-
-	if (distance < 10.0)
-	{
-		distance = 10.0;
-	}
-
-	return (targetPos - pos) * (mass * targetMass * GRAVITY) / pow(distance, 3);
-}
-
 Vect3D CalculateForceOnStar(Star* star, Octree* node)
 {
 	Vect3D starPos = star->GetPosition();
@@ -253,17 +192,19 @@ Vect3D CalculateForceOnStar(Star* star, Octree* node)
 
 	Vect3D force = { 0 };
 
+	MassData massData = node->GetMassData();
+
+	double distance = Distance(starPos, massData.position);
+
 	if (node->GetStarsNumber() == 1)
 	{
-		force = Force(starPos, starMass, node->GetPosition(), node->GetMass());
+		force = Force(starPos, starMass, massData.position, massData.mass, distance);
 	}
 	else
 	{
-		MassData massData = node->GetMassData();
-
-		if (node->GetBox().size / Distance(starPos, massData.centerOfMass) < 1.0)
+		if (node->GetBox().size / distance < 1.0)
 		{
-			force = Force(starPos, starMass, massData.centerOfMass, massData.mass);
+			force = Force(starPos, starMass, massData.position, massData.mass, distance);
 		}
 		else
 		{
@@ -284,6 +225,41 @@ Vect3D CalculateForceOnStar(Star* star, Octree* node)
 	return force;
 }
 
+bool IsInNode(Vect3D starPos, Box box)
+{
+	return starPos.x >= box.pos.x && starPos.x < box.pos.x + box.size &&
+		starPos.y >= box.pos.y && starPos.y < box.pos.y + box.size &&
+		starPos.z >= box.pos.z && starPos.z < box.pos.z + box.size;
+}
+
+Vect3D Force(Vect3D pos, double mass, Vect3D targetPos, double targetMass, double distance)
+{
+	if (distance < 10.0)
+	{
+		distance = 10.0;
+	}
+
+	return (targetPos - pos) * (mass * targetMass * GRAVITY) / pow(distance, 3);
+}
+
+void FreeOctree(Octree* octree)
+{
+	if (octree->GetStarsNumber() > 0)
+	{
+		Octree** nodes = octree->GetNodes();
+
+		for (int i = 0; i < 8; i++)
+		{
+			if (nodes[i] != nullptr)
+			{
+				FreeOctree(nodes[i]);
+			}
+		}
+	}
+
+	delete octree;
+}
+
 int Octree::GetStarsNumber()
 {
 	return starsNumber;
@@ -292,26 +268,6 @@ int Octree::GetStarsNumber()
 void Octree::SetStarsNumber(int _starsNumber)
 {
 	starsNumber = _starsNumber;
-}
-
-Vect3D Octree::GetPosition()
-{
-	return position;
-}
-
-void Octree::SetPosition(Vect3D _position)
-{
-	position = _position;
-}
-
-double Octree::GetMass()
-{
-	return mass;
-}
-
-void Octree::SetMass(double _mass)
-{
-	mass = _mass;
 }
 
 Octree** Octree::GetNodes()
@@ -342,14 +298,4 @@ MassData Octree::GetMassData()
 void Octree::SetMassData(MassData _massData)
 {
 	massData = _massData;
-}
-
-bool Octree::IsLeaf()
-{
-	return isLeaf;
-}
-
-void Octree::SetLeaf(bool _isLeaf)
-{
-	isLeaf = _isLeaf;
 }
