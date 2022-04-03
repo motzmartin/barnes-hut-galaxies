@@ -53,10 +53,11 @@ void Star::SetIsForceCalculated(bool _isForceCalculated)
 
 void Star::Update()
 {
-	Vect3D tmp = lastPosition;
-	lastPosition = position;
+	Vect3D tmp = position;
 
-	position = position * 2.0 - tmp + force / mass;
+	position = position * 2.0 - lastPosition + force / mass;
+
+	lastPosition = tmp;
 }
 
 double Distance(Vect3D p1, Vect3D p2)

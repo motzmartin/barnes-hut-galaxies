@@ -187,10 +187,10 @@ void CalculateForces(std::vector<Star>& stars, Octree* octree)
 
 Vect3D CalculateForceOnStar(Star* star, Octree* node)
 {
+	Vect3D force = { 0 };
+
 	Vect3D starPos = star->GetPosition();
 	double starMass = star->GetMass();
-
-	Vect3D force = { 0 };
 
 	MassData massData = node->GetMassData();
 
