@@ -24,7 +24,7 @@ bool Simulation::Initialize()
 		return false;
 	}
 
-	renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
+	renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
 
 	if (renderer == nullptr)
 	{
@@ -188,7 +188,7 @@ void Simulation::RenderFrame()
 
 	SDL_DestroyTexture(texture);
 
-	//ShowBoxes(octree);
+	ShowBoxes(octree);
 
 	SDL_RenderPresent(renderer);
 }

@@ -125,18 +125,16 @@ void DeleteEmptyLeaves(Octree* octree)
 
 	for (int i = 0; i < 8; i++)
 	{
-		if (nodes[i] != nullptr)
-		{
-			if (nodes[i]->GetStarsNumber() == 0)
-			{
-				FreeOctree(nodes[i]);
+		int starsNumber = nodes[i]->GetStarsNumber();
 
-				nodes[i] = nullptr;
-			}
-			else
-			{
-				DeleteEmptyLeaves(nodes[i]);
-			}
+		if (starsNumber == 0)
+		{
+			delete nodes[i];
+			nodes[i] = nullptr;
+		}
+		else if (starsNumber > 1)
+		{
+			DeleteEmptyLeaves(nodes[i]);
 		}
 	}
 }
@@ -244,7 +242,7 @@ Vect3D Force(Vect3D pos, double mass, Vect3D targetPos, double targetMass, doubl
 
 void FreeOctree(Octree* octree)
 {
-	if (octree->GetStarsNumber() > 0)
+	if (octree->GetStarsNumber() > 1)
 	{
 		Octree** nodes = octree->GetNodes();
 
