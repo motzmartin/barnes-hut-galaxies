@@ -41,16 +41,6 @@ void Star::SetForce(Vect3D _force)
 	force = _force;
 }
 
-bool Star::IsForceCalculated()
-{
-	return isForceCalculated;
-}
-
-void Star::SetIsForceCalculated(bool _isForceCalculated)
-{
-	isForceCalculated = _isForceCalculated;
-}
-
 void Star::Update()
 {
 	Vect3D tmp = position;

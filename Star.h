@@ -46,15 +46,10 @@ public:
 
 	Vect3D GetForce();
 	void SetForce(Vect3D _force);
-
-	bool IsForceCalculated();
-	void SetIsForceCalculated(bool _isForceCalculated);
-
+	
 	void Update();
 
 private:
-	double isForceCalculated = false;
-
 	Vect3D force = { 0 };
 
 	Vect3D position = { 0 };
