@@ -102,7 +102,9 @@ void Simulation::Update()
 	}
 
 	octree = CreateOctree(stars);
+
 	CalculateMasses(octree);
+
 	CalculateForces(stars, octree);
 
 	for (int i = 0; i < stars.size(); i++)

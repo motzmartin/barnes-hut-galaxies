@@ -2,8 +2,6 @@
 
 Octree* CreateOctree(std::vector<Star>& stars)
 {
-	Octree* octree = new Octree;
-	
 	Vect3D firstPos = stars[0].GetPosition();
 
 	Vect3D min = firstPos;
@@ -34,6 +32,8 @@ Octree* CreateOctree(std::vector<Star>& stars)
 		size = max.z - min.z;
 	}
 
+	Octree* octree = new Octree;
+
 	octree->SetBox({ min, size });
 	
 	for (int i = 0; i < stars.size(); i++)
@@ -48,10 +48,6 @@ Octree* CreateOctree(std::vector<Star>& stars)
 
 void InsertStar(std::vector<Star>& stars, Star star, Octree* octree)
 {
-	Box box = octree->GetBox();
-
-	double newSize = box.size / 2.0;
-
 	int starsNumber = octree->GetStarsNumber();
 
 	if (starsNumber > 1)
@@ -68,6 +64,10 @@ void InsertStar(std::vector<Star>& stars, Star star, Octree* octree)
 	}
 	else if (starsNumber == 1)
 	{
+		Box box = octree->GetBox();
+
+		double newSize = box.size / 2.0;
+
 		Vect3D positions[8] =
 		{
 			box.pos,
@@ -80,8 +80,8 @@ void InsertStar(std::vector<Star>& stars, Star star, Octree* octree)
 			{ box.pos.x + newSize, box.pos.y + newSize, box.pos.z + newSize }
 		};
 
-		bool check1 = true;
-		bool check2 = true;
+		bool existingStarInserted = false;
+		bool starInserted = false;
 
 		for (int i = 0; i < 8; i++)
 		{
@@ -91,21 +91,21 @@ void InsertStar(std::vector<Star>& stars, Star star, Octree* octree)
 			
 			MassData massData = octree->GetMassData();
 
-			if (check1 && IsInNode(massData.position, node->GetBox()))
+			if (!existingStarInserted && IsInNode(massData.position, node->GetBox()))
 			{
 				node->SetMassData(massData);
 				node->SetStarsNumber(1);
 
 				octree->SetMassData({ 0 });
 
-				check1 = false;
+				existingStarInserted = true;
 			}
 
-			if (check2 && IsInNode(star.GetPosition(), node->GetBox()))
+			if (!starInserted && IsInNode(star.GetPosition(), node->GetBox()))
 			{
 				InsertStar(stars, star, node);
 
-				check2 = false;
+				starInserted = true;
 			}
 
 			octree->SetNode(i, node);
