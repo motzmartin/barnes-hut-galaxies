@@ -41,9 +41,6 @@ public:
 	double GetMass();
 	void SetMass(double _mass);
 
-	int GetId();
-	void SetId(int _id);
-
 	Vect3D GetForce();
 	void SetForce(Vect3D _force);
 	
@@ -56,8 +53,6 @@ private:
 	Vect3D lastPosition = { 0 };
 
 	double mass = 0.0;
-
-	int id = 0;
 };
 
 double Distance(Vect3D p1, Vect3D p2);

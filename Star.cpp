@@ -21,16 +21,6 @@ void Star::SetMass(double _mass)
 	mass = _mass;
 }
 
-int Star::GetId()
-{
-	return id;
-}
-
-void Star::SetId(int _id)
-{
-	id = _id;
-}
-
 Vect3D Star::GetForce()
 {
 	return force;

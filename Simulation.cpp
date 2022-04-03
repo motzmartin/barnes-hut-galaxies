@@ -48,7 +48,6 @@ void Simulation::CreateStar(Vect3D pos, double mass)
 
 	star.SetPosition(pos);
 	star.SetMass(mass);
-	star.SetId((int)stars.size());
 
 	stars.push_back(star);
 }
