@@ -59,6 +59,8 @@ void InsertStar(std::vector<Star>& stars, Star star, Octree* octree)
 			if (IsInNode(star.GetPosition(), nodes[i]->GetBox()))
 			{
 				InsertStar(stars, star, nodes[i]);
+
+				break;
 			}
 		}
 	}
