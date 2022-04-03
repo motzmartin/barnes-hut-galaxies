@@ -45,7 +45,10 @@ void Star::Update()
 {
 	Vect3D tmp = position;
 
-	position = position * 2.0 - lastPosition + force / mass;
+	if (mass != 0.0)
+	{
+		position = position * 2.0 - lastPosition + force / mass;
+	}
 
 	lastPosition = tmp;
 }

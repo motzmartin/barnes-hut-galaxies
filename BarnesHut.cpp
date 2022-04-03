@@ -20,6 +20,14 @@ Octree* CreateOctree(std::vector<Star>& stars)
 		if (pos.z > max.z) max.z = pos.z;
 	}
 
+	min.x -= 1.0;
+	min.y -= 1.0;
+	min.z -= 1.0;
+
+	max.x += 1.0;
+	max.y += 1.0;
+	max.z += 1.0;
+
 	double size = max.x - min.x;
 
 	if (max.y - min.y > size)
@@ -126,6 +134,11 @@ void InsertStar(std::vector<Star>& stars, Star star, Octree* octree)
 
 void DeleteEmptyLeaves(Octree* octree)
 {
+	if (octree->GetStarsNumber() == 1)
+	{
+		return;
+	}
+
 	Octree** nodes = octree->GetNodes();
 
 	for (int i = 0; i < 8; i++)
@@ -137,7 +150,7 @@ void DeleteEmptyLeaves(Octree* octree)
 			delete nodes[i];
 			nodes[i] = nullptr;
 		}
-		else if (starsNumber > 1)
+		else
 		{
 			DeleteEmptyLeaves(nodes[i]);
 		}
@@ -190,6 +203,11 @@ void CalculateForces(std::vector<Star>& stars, Octree* octree)
 
 Vect3D CalculateForceOnStar(Star* star, Octree* node)
 {
+	if (node->GetId() == star->GetId())
+	{
+		return { 0 };
+	}
+
 	Vect3D force = { 0 };
 
 	Vect3D starPos = star->GetPosition();
@@ -220,7 +238,7 @@ Vect3D CalculateForceOnStar(Star* star, Octree* node)
 
 			for (int i = 0; i < 8; i++)
 			{
-				if (nodes[i] != nullptr && nodes[i]->GetId() != star->GetId())
+				if (nodes[i] != nullptr)
 				{
 					force = force + CalculateForceOnStar(star, nodes[i]);
 				}
