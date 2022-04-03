@@ -188,7 +188,7 @@ void Simulation::RenderFrame()
 
 	SDL_DestroyTexture(texture);
 
-	ShowBoxes(octree);
+	//ShowBoxes(octree);
 
 	SDL_RenderPresent(renderer);
 }
