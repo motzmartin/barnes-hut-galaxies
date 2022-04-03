@@ -113,6 +113,30 @@ void Simulation::Update()
 	}
 }
 
+void Simulation::ShowBoxes(Octree* octree)
+{
+	if (!octree->IsLeaf())
+	{
+		Octree** nodes = octree->GetNodes();
+
+		for (int i = 0; i < 8; i++)
+		{
+			if (nodes[i] != nullptr)
+			{
+				ShowBoxes(nodes[i]);
+			}
+		}
+	}
+
+	Box b = octree->GetBox();
+
+	SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
+	SDL_RenderDrawLine(renderer, (int)b.pos.x, (int)b.pos.y, (int)(b.pos.x + b.size), (int)b.pos.y);
+	SDL_RenderDrawLine(renderer, (int)b.pos.x, (int)b.pos.y, (int)b.pos.x, (int)(b.pos.y + b.size));
+	SDL_RenderDrawLine(renderer, (int)(b.pos.x + b.size), (int)b.pos.y, (int)(b.pos.x + b.size), (int)(b.pos.y + b.size));
+	SDL_RenderDrawLine(renderer, (int)b.pos.x, (int)(b.pos.y + b.size), (int)(b.pos.x + b.size), (int)(b.pos.y + b.size));
+}
+
 void Simulation::RenderFrame()
 {
 	SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
@@ -163,7 +187,9 @@ void Simulation::RenderFrame()
 	SDL_RenderCopy(renderer, texture, nullptr, nullptr);
 
 	SDL_DestroyTexture(texture);
-	
+
+	ShowBoxes(octree);
+
 	SDL_RenderPresent(renderer);
 }
 

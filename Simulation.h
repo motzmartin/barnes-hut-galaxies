@@ -22,6 +22,8 @@ public:
 		double starsMass,
 		double blackHoleMass);
 
+	void ShowBoxes(Octree* octree);
+
 private:
 	SDL_Window* window = nullptr;
 	SDL_Renderer* renderer = nullptr;
@@ -29,3 +31,5 @@ private:
 	std::vector<Star> stars;
 	Octree* octree;
 };
+
+double RandomCoord(double coord, double radius);

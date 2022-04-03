@@ -32,8 +32,6 @@ struct Vect3D
 	}
 };
 
-double Distance(Vect3D p1, Vect3D p2);
-
 class Star
 {
 public:
@@ -61,3 +59,5 @@ private:
 
 	int id = 0;
 };
+
+double Distance(Vect3D p1, Vect3D p2);
