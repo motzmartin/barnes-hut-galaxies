@@ -37,18 +37,13 @@ bool Simulation::Initialize()
 	return true;
 }
 
-double RandomCoord(double coord, double radius)
-{
-	return coord - radius + (double)(randombytes_uniform((int)radius * 2));
-}
-
 void Simulation::CreateStar(Vect3D pos, double mass)
 {
-	Star star;
+	Star* star = new Star;
 
-	star.SetPosition(pos);
-	star.SetMass(mass);
-	star.SetId(stars.size());
+	star->SetPosition(pos);
+	star->SetMass(mass);
+	star->SetId(stars.size());
 
 	stars.push_back(star);
 }
@@ -98,18 +93,18 @@ void Simulation::Update()
 {
 	if (octree != nullptr)
 	{
-		FreeOctree(octree);
+		octree->Free();
 	}
 
 	octree = CreateOctree(stars);
 
-	CalculateMasses(octree);
+	octree->CalculateMasses();
 
 	CalculateForces(stars, octree);
 
 	for (int i = 0; i < stars.size(); i++)
 	{
-		stars[i].Update();
+		stars[i]->Update();
 	}
 }
 
@@ -161,7 +156,7 @@ void Simulation::RenderFrame()
 
 	for (int i = 0; i < stars.size(); i++)
 	{
-		Vect3D starPosition = stars[i].GetPosition();
+		Vect3D starPosition = stars[i]->GetPosition();
 
 		if (starPosition.x >= 0.0 &&
 			starPosition.x < 600.0 &&
@@ -197,8 +192,18 @@ void Simulation::RenderFrame()
 
 void Simulation::Destroy()
 {
+	for (int i = 0; i < stars.size(); i++)
+	{
+		delete stars[i];
+	}
+
 	SDL_DestroyWindow(window);
 	SDL_DestroyRenderer(renderer);
 
 	SDL_Quit();
+}
+
+double RandomCoord(double coord, double radius)
+{
+	return coord - radius + (double)(randombytes_uniform((int)radius * 2));
 }

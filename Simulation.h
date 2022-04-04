@@ -28,7 +28,7 @@ private:
 	SDL_Window* window = nullptr;
 	SDL_Renderer* renderer = nullptr;
 
-	std::vector<Star> stars;
+	std::vector<Star*> stars;
 	Octree* octree;
 };
 

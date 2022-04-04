@@ -7,8 +7,8 @@ Vect3D Star::GetPosition()
 
 void Star::SetPosition(Vect3D _position)
 {
-	lastPosition = _position;
 	position = _position;
+	lastPosition = _position;
 }
 
 double Star::GetMass()

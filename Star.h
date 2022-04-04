@@ -52,8 +52,8 @@ public:
 private:
 	Vect3D force = { 0 };
 
-	Vect3D position = { 0 };
 	Vect3D lastPosition = { 0 };
+	Vect3D position = { 0 };
 
 	double mass = 0.0;
 
