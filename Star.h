@@ -35,6 +35,8 @@ struct Vect3D
 class Star
 {
 public:
+	void Update();
+
 	Vect3D GetPosition();
 	void SetPosition(Vect3D _position);
 
@@ -46,18 +48,13 @@ public:
 
 	Vect3D GetForce();
 	void SetForce(Vect3D _force);
-	
-	void Update();
 
 private:
-	Vect3D force = { 0 };
-
-	Vect3D lastPosition = { 0 };
 	Vect3D position = { 0 };
-
 	double mass = 0.0;
-
 	int id = 0;
+	Vect3D force = { 0 };
+	Vect3D lastPosition = { 0 };
 };
 
 double Distance(Vect3D p1, Vect3D p2);

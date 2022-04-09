@@ -1,5 +1,17 @@
 #include "Star.h"
 
+void Star::Update()
+{
+	if (mass > 0.0)
+	{
+		Vect3D tmp = position;
+
+		position = position * 2.0 - lastPosition + force / mass;
+
+		lastPosition = tmp;
+	}
+}
+
 Vect3D Star::GetPosition()
 {
 	return position;
@@ -39,18 +51,6 @@ Vect3D Star::GetForce()
 void Star::SetForce(Vect3D _force)
 {
 	force = _force;
-}
-
-void Star::Update()
-{
-	if (mass > 0.0)
-	{
-		Vect3D tmp = position;
-
-		position = position * 2.0 - lastPosition + force / mass;
-
-		lastPosition = tmp;
-	}
 }
 
 double Distance(Vect3D p1, Vect3D p2)

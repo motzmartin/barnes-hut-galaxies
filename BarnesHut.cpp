@@ -161,22 +161,6 @@ Vect3D Octree::CalculateForceOnStar(Star* star)
 	return force;
 }
 
-void Octree::Free()
-{
-	if (starsNumber > 1)
-	{
-		for (int i = 0; i < 8; i++)
-		{
-			if (nodes[i] != nullptr)
-			{
-				nodes[i]->Free();
-			}
-		}
-	}
-
-	delete this;
-}
-
 Octree** Octree::GetNodes()
 {
 	return nodes;
@@ -276,12 +260,22 @@ Octree* CreateOctree(std::vector<Star*>& stars)
 	return octree;
 }
 
-void CalculateForces(std::vector<Star*>& stars, Octree* octree)
+void FreeOctree(Octree* octree)
 {
-	for (int i = 0; i < stars.size(); i++)
+	if (octree->GetStarsNumber() > 1)
 	{
-		octree->CalculateForceOnStar(stars[i]);
+		Octree** nodes = octree->GetNodes();
+
+		for (int i = 0; i < 8; i++)
+		{
+			if (nodes[i] != nullptr)
+			{
+				FreeOctree(nodes[i]);
+			}
+		}
 	}
+
+	delete octree;
 }
 
 bool IsInNode(Vect3D starPos, Box box)
@@ -289,4 +283,12 @@ bool IsInNode(Vect3D starPos, Box box)
 	return starPos.x >= box.pos.x && starPos.x < box.pos.x + box.size &&
 		starPos.y >= box.pos.y && starPos.y < box.pos.y + box.size &&
 		starPos.z >= box.pos.z && starPos.z < box.pos.z + box.size;
+}
+
+void CalculateForces(std::vector<Star*>& stars, Octree* octree)
+{
+	for (int i = 0; i < stars.size(); i++)
+	{
+		octree->CalculateForceOnStar(stars[i]);
+	}
 }

@@ -93,7 +93,7 @@ void Simulation::Update()
 {
 	if (octree != nullptr)
 	{
-		octree->Free();
+		FreeOctree(octree);
 	}
 
 	octree = CreateOctree(stars);

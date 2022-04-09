@@ -18,14 +18,9 @@ class Octree
 {
 public:
 	void InsertStar(std::vector<Star*>& stars, Star* star);
-
 	void DeleteEmptyLeaves();
-
 	MassData CalculateMasses();
-
 	Vect3D CalculateForceOnStar(Star* star);
-
-	void Free();
 
 	Octree** GetNodes();
 
@@ -43,18 +38,16 @@ public:
 
 private:
 	int starsNumber = 0;
-
 	int id = -1;
-
 	MassData massData = { 0 };
-
 	Octree* nodes[8] = { 0 };
-
 	Box box = { 0 };
 };
 
 Octree* CreateOctree(std::vector<Star*>& stars);
 
-void CalculateForces(std::vector<Star*>& stars, Octree* octree);
+void FreeOctree(Octree* octree);
 
 bool IsInNode(Vect3D starPos, Box box);
+
+void CalculateForces(std::vector<Star*>& stars, Octree* octree);
