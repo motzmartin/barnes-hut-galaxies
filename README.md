@@ -1,4 +1,4 @@
-# Barnes-Hut-galaxies
+# barnes-hut-galaxies
 
 A Barnes Hut algorithm usage for galaxies simulation.
 
